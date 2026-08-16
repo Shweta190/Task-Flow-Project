@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TaskFlow Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!--Auth View -->
+    <div id="auth-view" class="view">
+        <div class="auth-card">
+            <h1>TaskFlow</h1>
+            <p class="subtitle">Organize your tasks efficiently</p>
+            <div class="auth-tabs">
+                <button id="tab-login" class="auth-tab active" data-mode="login">Login</button>
+                <button id="tab-register" class="auth-tab" data-mode="register">Sign Up</button>
+            </div>
+            <form id="auth-form">
+                <div id="name-field" class="form-group" style="display:none;">
+                    <label for="auth-name">Name</label>
+                    <input type="text" id="auth-name" placeholder="Your name">
+                </div>
+                <div class="form-group">
+                    <label for="auth-email">Email</label>
+                    <input type="email" id="auth-email" placeholder="you@example.com" required>
+                </div>
+                <div class="form-group">
+                    <label for="auth-password">Password</label>
+                    <input type="password" id="auth-password" placeholder="Password" required>
+                </div>
+                <button type="submit" id="auth-submit">Login</button>
+                <p id="auth-error" class="error-msg"></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- App View (dashboard, stats, profile)-->
+    <div id="app-view" class="view" style="display:none;">
+        <header>
+            <div class="header-left">
+                <h1>TaskFlow</h1>
+            </div>
+            <nav id="nav-bar">
+                <button class="nav-btn active" data-page="dashboard">Dashboard</button>
+                <button class="nav-btn" data-page="stats">Statistics</button>
+                <button class="nav-btn" data-page="profile">Profile</button>
+            </nav>
+        </header>
+
+        <main>
+            <!-- Dashboard-->
+            <section id="page-dashboard" class="page">
+                <!-- Quick Add -->
+                <div class="card">
+                    <h2>Quick Add</h2>
+                    <form id="quick-add-form" class="quick-add-row">
+                        <input type="text" id="quick-add-desc" placeholder="e.g. urgent call client tomorrow">
+                        <button type="submit" id="quick-add-btn">Quick Add</button>
+                    </form>
+                </div>
+
+                <!-- Add Task Form -->
+                <div class="card">
+                    <h2>Add a Task</h2>
+                    <form id="task-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="title">Title</label>
+                                <input type="text" id="title" placeholder="Enter task title" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="category">Category</label>
+                                <input type="text" id="category" placeholder="e.g. Work, Personal" value="General">
+                            </div>
+                            <div class="form-group">
+                                <label for="priority">Priority</label>
+                                <select id="priority">
+                                    <option value="low">Low</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="high">High</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="due_date">Due Date</label>
+                                <input type="text" id="due_date" placeholder="e.g. today, tomorrow">
+                            </div>
+                        </div>
+                        <button type="submit" id="add-btn">Add Task</button>
+                    </form>
+                </div>
+
+                <!-- Search & Sort Controls -->
+                <div class="card">
+                    <h2>Search & Sort</h2>
+                    <div class="controls-row">
+                        <div class="search-group">
+                            <input type="text" id="search-input" placeholder="Search by title...">
+                            <select id="search-algo">
+                                <option value="binary">Binary Search</option>
+                                <option value="linear">Linear Search</option>
+                                <option value="none">Unsorted</option>
+                            </select>
+                            <button id="search-btn">Search</button>
+                        </div>
+                        <div class="sort-group">
+                            <label for="sort-select">Sort by:</label>
+                            <select id="sort-select">
+                                <option value="none">Unsorted</option>
+                                <option value="priority">Priority</option>
+                                <option value="due_date">Due Date</option>
+                                <option value="category">Category</option>
+                                <option value="title">Title</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p id="search-result-msg" class="search-result-msg"></p>
+                </div>
+
+                <!-- Task List -->
+                <div class="card">
+                    <div class="list-header">
+                        <h2>Task List</h2>
+                        <button id="clear-all-btn" class="btn-danger-outline">Clear All</button>
+                    </div>
+                    <div id="task-list"></div>
+                </div>
+            </section>
+
+            <!-- Statistics Pa -->
+            <section id="page-stats" class="page" style="display:none;">
+                <div class="card">
+                    <h2>Task Statistics</h2>
+                    <div class="stats-summary">
+                        <div class="stat-box">
+                            <span class="stat-number" id="stat-total">0</span>
+                            <span class="stat-label">Total Tasks</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number" id="stat-pending">0</span>
+                            <span class="stat-label">Pending</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-number" id="stat-completed">0</span>
+                            <span class="stat-label">Completed</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>By Priority</h3>
+                    <div id="chart-priority" class="chart-container"></div>
+                </div>
+                <div class="card">
+                    <h3>By Category</h3>
+                    <div id="chart-category" class="chart-container"></div>
+                </div>
+                <div class="card">
+                    <h3>By Status</h3>
+                    <div id="chart-status" class="chart-container"></div>
+                </div>
+            </section>
+
+            <!--  Profile Page  -->
+            <section id="page-profile" class="page" style="display:none;">
+                <div class="card profile-card">
+                    <h2>My Profile</h2>
+                    <div class="profile-avatar" id="profile-avatar">U</div>
+                    <div class="profile-info">
+                        <p class="profile-name" id="profile-name">User</p>
+                        <p class="profile-email" id="profile-email">user@example.com</p>
+                    </div>
+                    <button id="logout-btn" class="btn-danger">Logout</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!--  Task Detail Modal  -->
+    <div id="task-detail-modal" class="modal" style="display:none;">
+        <div class="modal-overlay" id="modal-overlay"></div>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Task Detail</h2>
+                <button id="modal-close" class="modal-close-btn">&times;</button>
+            </div>
+            <div id="task-detail-body"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
